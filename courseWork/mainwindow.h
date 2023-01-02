@@ -7,6 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlTableModel>
 #include <QDate>
+#include <QSqlError>
 
 #include "create_prod.h"
 #include "create_recipe.h"
@@ -52,6 +53,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QSqlDatabase db;
 
 private slots:
 
@@ -97,7 +99,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSqlDatabase db;
     QSqlTableModel *modelDate;
     QSqlTableModel *modelDate1;
     QSqlTableModel *modelDate2;

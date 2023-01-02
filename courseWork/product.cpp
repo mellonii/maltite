@@ -14,8 +14,6 @@ Product::Product(QWidget *parent,int row_1) :
     }else{
         qDebug("No open");
     }
-    query = new QSqlQuery(db);
-    query -> exec("SELECT * FROM Products WHERE calories = 52;");
     modelProduct = new QSqlTableModel(this, db);
     modelProduct ->setTable("Products");
     modelProduct->setHeaderData(1, Qt::Horizontal, QObject::tr("Название"));
@@ -37,6 +35,5 @@ Product::Product(QWidget *parent,int row_1) :
 
 Product::~Product()
 {
-    db.close();
     delete ui;
 }

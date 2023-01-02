@@ -1,6 +1,6 @@
 #include "create_recipe.h"
 #include "ui_create_recipe.h"
-//#include <fstream>
+#include <fstream>
 
 create_recipe::create_recipe(QWidget *parent, int num) :
     QDialog(parent),
@@ -15,7 +15,7 @@ create_recipe::create_recipe(QWidget *parent, int num) :
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open for create table ProdInRec: %s", qPrintable(db.lastError().text()));
     }
     queryDropProduct = new QSqlQuery(db);
     queryDropProduct -> exec("DROP TABLE IF EXISTS ProdInRec;");
@@ -27,15 +27,6 @@ create_recipe::create_recipe(QWidget *parent, int num) :
     modelProduct->setHeaderData(1, Qt::Horizontal, QObject::tr("Количество"));
     ui->tableView->setModel(modelProduct);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
-    modelAllProduct = new QSqlTableModel(this, db);
-    modelAllProduct ->setTable("Recipes");
-
-    if(db.open()){
-        qDebug("Open");
-    }else{
-        qDebug("No open");
-    }
 
     modelProd = new QSqlTableModel(this, db);
     modelProd->setTable("Products");
@@ -52,7 +43,6 @@ create_recipe::create_recipe(QWidget *parent, int num) :
 
 create_recipe::~create_recipe()
 {
-    db.close();
     delete ui;
 }
 
@@ -83,7 +73,6 @@ struct Product {
 };
 //Рецепты с продуктами и количеством продуктов
 struct Dish {
-    int id;
     QString name;
     QString recipe;
     int Calories;
@@ -92,7 +81,6 @@ struct Dish {
     double Fat;
     std::map<double, Product> ingredient_list; //map для сохранения ингредиентов и количества
     Dish() {
-        id = 0;
         name = "0";
         recipe = "0";
         Calories = 0;
@@ -100,8 +88,7 @@ struct Dish {
         Protein = 0.0;
         Fat = 0.0;
     }
-    Dish(int id, QString name, QString recipe, std::map<double, Product> ingredient_list) {
-        this->id = id;
+    Dish(QString name, QString recipe, std::map<double, Product> ingredient_list) {
         this->name = name;
         this->recipe = recipe;
         Calories = 0;
@@ -141,7 +128,7 @@ void create_recipe::on_pushButton_2_clicked()
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open for select from ProdInRec, Products: %s", qPrintable(db.lastError().text()));
     }
     QSqlQuery query_all("SELECT ProdInRec.Prod_id,  Products.calories , Products.protein , Products.fat , Products.carbohydrate, ProdInRec.count FROM ProdInRec, Products "
                     "WHERE ProdInRec.Prod_id = Products.id");
@@ -154,31 +141,34 @@ void create_recipe::on_pushButton_2_clicked()
                 //fin << query_all.value(0).toInt() << " " << query_all.value(1).toInt() << " " << query_all.value(2).toDouble() << " " << query_all.value(3).toDouble() << " " << query_all.value(4).toDouble();
                 //fin.close();
         }
-    Dish dish = Dish(modelAllProduct->rowCount()+1, name, recipe,ingredient_list);
+
+        modelAllProduct = new QSqlTableModel(this, db);
+        modelAllProduct ->setTable("Recipes");
+
+    Dish dish = Dish(name, recipe,ingredient_list);
     calories = dish.Calories;
     protein = dish.Protein;
     fat = dish.Fat;
     carbohydrate = dish.Carbohydrate;
 
-    //std::ofstream fin;
-    //fin.open("tmp.txt");
-    //fin << modelAllProduct->rowCount()+1 << " " << dish.name.toStdString() << " " << dish.recipe.toStdString() << " " << calories << " " << protein << " " << fat << " " << carbohydrate;
-    //fin.close();
+    std::ofstream fin;
+    fin.open("tmp.txt");
+    fin << dish.name.toStdString() << " " << dish.recipe.toStdString() << " " << calories << " " << protein << " " << fat << " " << carbohydrate;
+    fin.close();
 
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open for add info about recipe: %s", qPrintable(db.lastError().text()));
     }
     query = new QSqlQuery(db);
-    query->prepare("INSERT INTO Recipes (id, name, recipe, calories, protein, fat, carbohydrate) "
-                  "VALUES (:id, :name, :recipe, :calories, :protein, :fat, :carbohydrate)");
-    query->bindValue(0, modelAllProduct->rowCount()+1);
-    query->bindValue(1, name);
-    query->bindValue(2, recipe);
-    query->bindValue(3, calories);
-    query->bindValue(4, protein);
-    query->bindValue(5, fat);
-    query->bindValue(6, carbohydrate);
+    query->prepare("INSERT INTO Recipes (name, recipe, calories, protein, fat, carbohydrate) "
+                  "VALUES (:name, :recipe, :calories, :protein, :fat, :carbohydrate)");
+    query->bindValue(0, name);
+    query->bindValue(1, recipe);
+    query->bindValue(2, calories);
+    query->bindValue(3, protein);
+    query->bindValue(4, fat);
+    query->bindValue(5, carbohydrate);
     query->exec();
 }

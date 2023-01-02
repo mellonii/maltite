@@ -22,18 +22,18 @@ MainWindow::MainWindow(QWidget *parent)
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
     query_recipes = new QSqlQuery(db);
-    query_recipes -> exec("CREATE TABLE Recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, recipe TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
+    query_recipes -> exec("CREATE TABLE IF NOT EXISTS Recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, recipe TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
     queryProd = new QSqlQuery(db);
-    queryProd -> exec("CREATE TABLE Products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
+    queryProd -> exec("CREATE TABLE IF NOT EXISTS Products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
     queryFavFood = new QSqlQuery(db);
-    queryFavFood -> exec("CREATE TABLE FavFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
+    queryFavFood -> exec("CREATE TABLE IF NOT EXISTS FavFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
     queryHateFood = new QSqlQuery(db);
-    queryHateFood -> exec("CREATE TABLE HateFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
+    queryHateFood -> exec("CREATE TABLE IF NOT EXISTS HateFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
     queryUser = new QSqlQuery(db);
-    queryUser -> exec("CREATE TABLE User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
+    queryUser -> exec("CREATE TABLE IF NOT EXISTS User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
 
 
     model_recipes = new QSqlTableModel(this, db);
@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
     QSqlQuery queryUser1("SELECT name, age, height, weight, gender, goal, active, daily_calorie_intake, protein, fat, carbs FROM User;");
     while (queryUser1.next()) {
@@ -118,16 +118,16 @@ MainWindow::MainWindow(QWidget *parent)
     if (db.open()) {
         qDebug("Database opened successfully");
     } else {
-        qDebug("Failed to open database");
+        qDebug("Failed to open database: %s", qPrintable(db.lastError().text()));
     }
     breakfastTableQuery = new QSqlQuery(db);
-    breakfastTableQuery->exec("CREATE TABLE breakfast (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
+    breakfastTableQuery->exec("CREATE TABLE IF NOT EXISTS breakfast (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
     lunchTableQuery = new QSqlQuery(db);
-    lunchTableQuery->exec("CREATE TABLE lunch (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
+    lunchTableQuery->exec("CREATE TABLE IF NOT EXISTS lunch (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
     dinnerTableQuery = new QSqlQuery(db);
-    dinnerTableQuery->exec("CREATE TABLE dinner (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
+    dinnerTableQuery->exec("CREATE TABLE IF NOT EXISTS dinner (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
     snackTableQuery = new QSqlQuery(db);
-    snackTableQuery->exec("CREATE TABLE snack (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
+    snackTableQuery->exec("CREATE TABLE IF NOT EXISTS snack (recipe_id INTEGER, quantity INTEGER, time DATETIME);");
 
     todays_date = QDate::currentDate();
     MainWindow::on_calendarWidget_activated(todays_date);
@@ -331,13 +331,14 @@ void MainWindow::on_tableRecipes_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_calendarWidget_activated(const QDate &date)
 {
+    /*
     QString dateString = date.toString("yyyy-MM-dd");
     QString tmp_query = "SELECT breakfast.recipe_id, Recipes.name, breakfast.count FROM Recipes, breakfast WHERE (Recipes.id = breakfast.recipe_id AND breakfast.time = '" + dateString + "');";
 
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
     queryDate = new QSqlQuery(db);
     queryDate->exec(tmp_query);
@@ -352,9 +353,9 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
         if(db.open()){
             qDebug("Open");
         }else{
-            qDebug("No open");
+            qDebug("No open: %s", qPrintable(db.lastError().text()));
         }
-        queryDate1->clear();
+        queryDate1 = new QSqlQuery(db);
         queryDate1->prepare("INSERT INTO tmp_breakfast (recipe_id, name, count) "
                       "VALUES (:id, :name, :count)");
         queryDate1->bindValue(0, queryDate->value(0).toInt());
@@ -377,13 +378,13 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
-    queryDate->clear();
+    queryDate = new QSqlQuery(db);
     queryDate->exec(tmp_query);
-    queryDate1->clear();
+    queryDate1 = new QSqlQuery(db);
     queryDate1 -> exec("DROP TABLE IF EXISTS tmp_lunch;");
-    queryDate1->clear();
+    queryDate1 = new QSqlQuery(db);
     queryDate1 -> exec("CREATE TABLE tmp_lunch (id INTEGER PRIMARY KEY AUTOINCREMENT, recipe_id INTEGER, name TEXT, count INTEGER);");
 
     while (queryDate->next()) {
@@ -392,9 +393,9 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
         if(db.open()){
             qDebug("Open");
         }else{
-            qDebug("No open");
+            qDebug("No open: %s", qPrintable(db.lastError().text()));
         }
-        queryDate1->clear();
+        queryDate1 = new QSqlQuery(db);
         queryDate1->prepare("INSERT INTO tmp_lunch (recipe_id, name, count) "
                       "VALUES (:id, :name, :count)");
         queryDate1->bindValue(0, queryDate->value(0).toInt());
@@ -416,13 +417,13 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
-    queryDate->clear();
+    queryDate = new QSqlQuery(db);
     queryDate->exec(tmp_query);
-    queryDate1->clear();
+    queryDate1 = new QSqlQuery(db);
     queryDate1 -> exec("DROP TABLE IF EXISTS tmp_dinner;");
-    queryDate1->clear();
+    queryDate1 = new QSqlQuery(db);
     queryDate1 -> exec("CREATE TABLE tmp_dinner (id INTEGER PRIMARY KEY AUTOINCREMENT, recipe_id INTEGER, name TEXT, count INTEGER);");
 
     while (queryDate->next()) {
@@ -431,9 +432,9 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
         if(db.open()){
             qDebug("Open");
         }else{
-            qDebug("No open");
+            qDebug("No open: %s", qPrintable(db.lastError().text()));
         }
-        queryDate1->clear();
+        queryDate1 = new QSqlQuery(db);
         queryDate1->prepare("INSERT INTO tmp_dinner (recipe_id, name, count) "
                       "VALUES (:id, :name, :count)");
         queryDate1->bindValue(0, queryDate->value(0).toInt());
@@ -455,13 +456,13 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     if(db.open()){
         qDebug("Open");
     }else{
-        qDebug("No open");
+        qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
-    queryDate->clear();
+    queryDate = new QSqlQuery(db);
     queryDate->exec(tmp_query);
-    queryDate1->clear();
+    queryDate1 = new QSqlQuery(db);
     queryDate1 -> exec("DROP TABLE IF EXISTS tmp_snack;");
-    queryDate1->clear();
+    queryDate1 = new QSqlQuery(db);
     queryDate1 -> exec("CREATE TABLE tmp_snack (id INTEGER PRIMARY KEY AUTOINCREMENT, recipe_id INTEGER, name TEXT, count INTEGER);");
 
     while (queryDate->next()) {
@@ -470,9 +471,9 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
         if(db.open()){
             qDebug("Open");
         }else{
-            qDebug("No open");
+            qDebug("No open: %s", qPrintable(db.lastError().text()));
         }
-        queryDate1->clear();
+        queryDate1 = new QSqlQuery(db);
         queryDate1->prepare("INSERT INTO tmp_snack (recipe_id, name, count) "
                       "VALUES (:id, :name, :count)");
         queryDate1->bindValue(0, queryDate->value(0).toInt());
@@ -488,15 +489,17 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     ui->tableView_6->setColumnHidden(1, true);
     ui->tableView_6->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView_6->update();
+    */
 }
 
 
 void MainWindow::on_pushButton_5_clicked()
 {
+    /*
     QString dateString = todays_date.toString("yyyy-MM-dd");
     QString time = "breakfast";
     wAdd = new AddDish(this, ui, modelDate->rowCount(), dateString, time);
-    wAdd->show();
+    wAdd->show();*/
     //modelDate->insertRow(modelDate->rowCount());
 }
 

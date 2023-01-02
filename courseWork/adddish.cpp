@@ -40,7 +40,6 @@ AddDish::AddDish(QWidget *parent, Ui::MainWindow *MWui, int row, QString date, Q
 
 AddDish::~AddDish()
 {
-    db.close();
     delete ui;
 }
 

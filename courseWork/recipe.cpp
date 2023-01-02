@@ -49,6 +49,5 @@ Recipe::Recipe(QWidget *parent, int row) :
 
 Recipe::~Recipe()
 {
-    db.close();
     delete ui;
 }
