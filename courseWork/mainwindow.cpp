@@ -373,7 +373,10 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     QString dateString = date.toString("yyyy-MM-dd");
     todays_date = date;
 
-    time_up();
+    table_update(dateString, "breakfast");
+    table_update(dateString, "lunch");
+    table_update(dateString, "dinner");
+    table_update(dateString, "snack");
     /*
         std::ofstream out;
         out.open("tmp.txt");
@@ -412,8 +415,7 @@ void MainWindow::on_tableViewsnack_clicked(const QModelIndex &index)
 void MainWindow::on_pushButton_clicked()
 {
     if(row!=-1){
-    modelbreakfast->removeRow(row);
-    ui->tableViewbreakfast->update();}
+    modelbreakfast->removeRow(row);}
     row = -1;
 }
 
@@ -421,8 +423,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     if(row1!=-1){
-    modellunch->removeRow(row);
-    ui->tableViewlunch->update();}
+    modellunch->removeRow(row);}
     row1 = -1;
 }
 
@@ -430,8 +431,7 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_pushButton_12_clicked()
 {
     if(row2!=-1){
-    modeldinner->removeRow(row);
-    ui->tableViewdinner->update();}
+    modeldinner->removeRow(row);}
     row2 = -1;
 }
 
@@ -439,8 +439,7 @@ void MainWindow::on_pushButton_12_clicked()
 void MainWindow::on_pushButton_13_clicked()
 {
     if(row3!=-1){
-    modelsnack->removeRow(row);
-    ui->tableViewsnack->update();}
+    modelsnack->removeRow(row);}
     row3 = -1;
 }
 
