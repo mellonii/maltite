@@ -36,5 +36,6 @@ Create_prod::~Create_prod()
 void Create_prod::on_pushButton_clicked()
 {
     modelProduct->insertRow(modelProduct->rowCount());
+    Create_prod::~Create_prod();
 }
 

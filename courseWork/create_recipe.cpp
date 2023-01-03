@@ -171,4 +171,6 @@ void create_recipe::on_pushButton_2_clicked()
     query->bindValue(4, fat);
     query->bindValue(5, carbohydrate);
     query->exec();
+
+    create_recipe::~create_recipe();
 }

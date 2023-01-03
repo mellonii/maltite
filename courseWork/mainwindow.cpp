@@ -136,6 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     todays_date = QDate::currentDate();
     MainWindow::on_calendarWidget_activated(todays_date);
+
 }
 
 MainWindow::~MainWindow()
@@ -333,6 +334,8 @@ void MainWindow::table_update(QString dateString, QString time){
 
     QString tmp_query = "SELECT " + time + ".recipe_id, Recipes.name, " + time + ".quantity FROM Recipes, " + time + " WHERE (Recipes.id = " + time + ".recipe_id AND " + time + ".time = '" + dateString + "');";
     QString tmp_drop = "DROP TABLE IF EXISTS tmp_" + time + ";";
+    QString tmp_create = "CREATE TABLE tmp_" + time + " (id INTEGER PRIMARY KEY AUTOINCREMENT, recipe_id INTEGER, name TEXT, count INTEGER);";
+
     if(db.open()){
          qDebug("Open");
     }else{
@@ -340,83 +343,27 @@ void MainWindow::table_update(QString dateString, QString time){
     }
     query = new QSqlQuery(db);
     query->exec(tmp_drop);
-    query = new QSqlQuery(db);
+    query ->clear();
+    query->exec(tmp_create);
+    query ->clear();
     query->prepare(tmp_query);
     query->exec();
     while(query->next()){
-          tmp_query = "INSERT INTO tmp_" + time + " (recipe_id, name, count) VALUES (:recipe_id, :name, :count);";
+          tmp_query = "INSERT INTO tmp_" + time + " (recipe_id, name, count) VALUES (:recipe_id, :name, :count)";
           if(db.open()){
                qDebug("Open");
           }else{
                qDebug("No open");
           }
-          query = new QSqlQuery(db);
-          query->prepare(tmp_query);
-          query->bindValue(0, query->value(0).toInt());
-          query->bindValue(1, query->value(1).toString());
-          query->bindValue(2, query->value(2).toInt());
-          query->exec();
+          queryadd = new QSqlQuery(db);
+          queryadd->prepare(tmp_query);
+          queryadd->bindValue(0, query->value(0).toInt());
+          queryadd->bindValue(1, query->value(1).toString());
+          queryadd->bindValue(2, query->value(2).toInt());
+          queryadd->exec();
 }
 
-    QString table_name = "tmp_" + time;
-    if(time == "breakfast"){
-    if(db.open()){
-          qDebug("Open");
-    }else{
-          qDebug("No open");
-    }
-    breakfastTableQuery = new QSqlQuery(db);
-    modelbreakfast = new QSqlTableModel(this, db);
-    modelbreakfast ->setTable(table_name);
-
-    ui->tableViewbreakfast->setModel(modelbreakfast);
-    ui->tableViewbreakfast->setColumnHidden(0, true);
-    ui->tableViewbreakfast->setColumnHidden(1, true);
-    ui->tableViewbreakfast->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    } else if(time == "lunch"){
-    if(db.open()){
-          qDebug("Open");
-    }else{
-          qDebug("No open");
-    }
-    lunchTableQuery = new QSqlQuery(db);
-    modellunch = new QSqlTableModel(this, db);
-    modellunch ->setTable(table_name);
-
-    ui->tableViewlunch->setModel(modellunch);
-    ui->tableViewlunch->setColumnHidden(0, true);
-    ui->tableViewlunch->setColumnHidden(1, true);
-    ui->tableViewlunch->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    } else if(time == "dinner"){
-    if(db.open()){
-          qDebug("Open");
-    }else{
-          qDebug("No open");
-    }
-    dinnerTableQuery = new QSqlQuery(db);
-    modeldinner = new QSqlTableModel(this, db);
-    modeldinner ->setTable(table_name);
-
-    ui->tableViewdinner->setModel(modeldinner);
-    ui->tableViewdinner->setColumnHidden(0, true);
-    ui->tableViewdinner->setColumnHidden(1, true);
-    ui->tableViewdinner->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    }else if(time == "snack"){
-    if(db.open()){
-          qDebug("Open");
-    }else{
-          qDebug("No open");
-    }
-    snackTableQuery = new QSqlQuery(db);
-    modelsnack = new QSqlTableModel(this, db);
-    modelsnack ->setTable(table_name);
-
-    ui->tableViewsnack->setModel(modelsnack);
-    ui->tableViewsnack->setColumnHidden(0, true);
-    ui->tableViewsnack->setColumnHidden(1, true);
-    ui->tableViewsnack->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    }
-
+    time_up();
     // recipe_id INTEGER, quantity INTEGER, time DATETIME
 }
 
@@ -426,14 +373,7 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     QString dateString = date.toString("yyyy-MM-dd");
     todays_date = date;
 
-    QString time = "breakfast";
-    table_update(dateString, time);
-    time = "lunch";
-    table_update(dateString, time);
-    time = "dinner";
-    table_update(dateString, time);
-    time = "snack";
-    table_update(dateString, time);
+    time_up();
     /*
         std::ofstream out;
         out.open("tmp.txt");
@@ -474,6 +414,7 @@ void MainWindow::on_pushButton_clicked()
     if(row!=-1){
     modelbreakfast->removeRow(row);
     ui->tableViewbreakfast->update();}
+    row = -1;
 }
 
 
@@ -482,6 +423,7 @@ void MainWindow::on_pushButton_2_clicked()
     if(row1!=-1){
     modellunch->removeRow(row);
     ui->tableViewlunch->update();}
+    row1 = -1;
 }
 
 
@@ -490,6 +432,7 @@ void MainWindow::on_pushButton_12_clicked()
     if(row2!=-1){
     modeldinner->removeRow(row);
     ui->tableViewdinner->update();}
+    row2 = -1;
 }
 
 
@@ -498,6 +441,7 @@ void MainWindow::on_pushButton_13_clicked()
     if(row3!=-1){
     modelsnack->removeRow(row);
     ui->tableViewsnack->update();}
+    row3 = -1;
 }
 
 void MainWindow::on_pushButton_5_clicked()
@@ -532,5 +476,53 @@ void MainWindow::on_pushButton_8_clicked()
     QString time = "snack";
     wAdd = new AddDish(this, ui, modelsnack->rowCount(), dateString, time);
     wAdd->show();
+}
+
+void MainWindow::time_up(){
+    if(db.open()){
+          qDebug("Open");
+    }else{
+          qDebug("No open for bdls tableView: %s", qPrintable(db.lastError().text()));
+    }
+
+    modelbreakfast = new QSqlTableModel(this, db);
+    modelbreakfast ->setTable("tmp_breakfast");
+    modelbreakfast->setHeaderData(2, Qt::Horizontal, QObject::tr("Блюдо"));
+    modelbreakfast->setHeaderData(3, Qt::Horizontal, QObject::tr("Количество (в г)"));
+    modelbreakfast->select();
+    ui->tableViewbreakfast->setModel(modelbreakfast);
+    ui->tableViewbreakfast->setColumnHidden(0, true);
+    ui->tableViewbreakfast->setColumnHidden(1, true);
+    ui->tableViewbreakfast->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    modellunch = new QSqlTableModel(this, db);
+    modellunch ->setTable("tmp_lunch");
+    modellunch->setHeaderData(2, Qt::Horizontal, QObject::tr("Блюдо"));
+    modellunch->setHeaderData(3, Qt::Horizontal, QObject::tr("Количество (в г)"));
+    modellunch->select();
+    ui->tableViewlunch->setModel(modellunch);
+    ui->tableViewlunch->setColumnHidden(0, true);
+    ui->tableViewlunch->setColumnHidden(1, true);
+    ui->tableViewlunch->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    modeldinner = new QSqlTableModel(this, db);
+    modeldinner ->setTable("tmp_dinner");
+    modeldinner->setHeaderData(2, Qt::Horizontal, QObject::tr("Блюдо"));
+    modeldinner->setHeaderData(3, Qt::Horizontal, QObject::tr("Количество (в г)"));
+    modeldinner->select();
+    ui->tableViewdinner->setModel(modeldinner);
+    ui->tableViewdinner->setColumnHidden(0, true);
+    ui->tableViewdinner->setColumnHidden(1, true);
+    ui->tableViewdinner->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    modelsnack = new QSqlTableModel(this, db);
+    modelsnack ->setTable("tmp_snack");
+    modelsnack->setHeaderData(2, Qt::Horizontal, QObject::tr("Блюдо"));
+    modelsnack->setHeaderData(3, Qt::Horizontal, QObject::tr("Количество (в г)"));
+    modelsnack->select();
+    ui->tableViewsnack->setModel(modelsnack);
+    ui->tableViewsnack->setColumnHidden(0, true);
+    ui->tableViewsnack->setColumnHidden(1, true);
+    ui->tableViewsnack->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 

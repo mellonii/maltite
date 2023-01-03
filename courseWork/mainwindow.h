@@ -105,6 +105,8 @@ private slots:
 
     void on_pushButton_8_clicked();
 
+    void time_up();
+
 private:
     Ui::MainWindow *ui;
     QDate todays_date;
@@ -143,12 +145,14 @@ private:
     QSqlQuery *lunchTableQuery;
     QSqlQuery *dinnerTableQuery;
     QSqlQuery *snackTableQuery;
+
     QSqlTableModel *modelbreakfast;
     QSqlTableModel *modellunch;
     QSqlTableModel *modeldinner;
     QSqlTableModel *modelsnack;
 
     QSqlQuery *query;
+    QSqlQuery *queryadd;
 
     int row;
     int row1;
