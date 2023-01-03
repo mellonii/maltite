@@ -77,15 +77,17 @@ private slots:
 
     void on_tableRecipes_doubleClicked(const QModelIndex &index);
 
-    void on_pushButton_5_clicked();
+    void table_update(QString dateString, QString time);
 
-    void on_tableView_clicked(const QModelIndex &index);
+    void on_calendarWidget_activated(const QDate &date);
 
-    void on_tableView_2_clicked(const QModelIndex &index);
+    void on_tableViewbreakfast_clicked(const QModelIndex &index);
 
-    void on_tableView_5_clicked(const QModelIndex &index);
+    void on_tableViewlunch_clicked(const QModelIndex &index);
 
-    void on_tableView_6_clicked(const QModelIndex &index);
+    void on_tableViewdinner_clicked(const QModelIndex &index);
+
+    void on_tableViewsnack_clicked(const QModelIndex &index);
 
     void on_pushButton_clicked();
 
@@ -95,14 +97,16 @@ private slots:
 
     void on_pushButton_13_clicked();
 
-    void on_calendarWidget_activated(const QDate &date);
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_pushButton_8_clicked();
 
 private:
     Ui::MainWindow *ui;
-    QSqlTableModel *modelDate;
-    QSqlTableModel *modelDate1;
-    QSqlTableModel *modelDate2;
-    QSqlTableModel *modelDate3;
     QDate todays_date;
 
     QSqlQuery *queryProd;
@@ -133,16 +137,18 @@ private:
     int tmp_weight;
     bool tmp_gender; //0 - мужской пол, 1 - женский
     int tmp_goal; //1 - сбросить, 2 - сохранить, 3 - набрать
-    int tmp_active;
-    //1 - Сидячий образ жизни, 2 - Умеренная активность, 3 - Средняя(занятия 3 - 5 раз в неделю), 4 - Активные люди(интенсивные нагрузки), 5 - Спортсмены(6 - 7 раз в неделю)
+    int tmp_active; //1 - Сидячий образ жизни, 2 - Умеренная активность, 3 - Средняя(занятия 3 - 5 раз в неделю), 4 - Активные люди(интенсивные нагрузки), 5 - Спортсмены(6 - 7 раз в неделю)
 
-    QSqlQuery *queryDate;
-    QSqlQuery *queryDate1;
     QSqlQuery *breakfastTableQuery;
     QSqlQuery *lunchTableQuery;
     QSqlQuery *dinnerTableQuery;
     QSqlQuery *snackTableQuery;
+    QSqlTableModel *modelbreakfast;
+    QSqlTableModel *modellunch;
+    QSqlTableModel *modeldinner;
+    QSqlTableModel *modelsnack;
 
+    QSqlQuery *query;
 
     int row;
     int row1;

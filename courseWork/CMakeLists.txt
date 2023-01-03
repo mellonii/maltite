@@ -18,9 +18,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 qt_standard_project_setup()
 
 
-#find_package(QT NAMES Qt6 REQUIRED COMPONENTS Sql)
-#find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Sql)
-
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp

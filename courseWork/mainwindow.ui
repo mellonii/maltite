@@ -628,7 +628,7 @@ hr { height: 1px; border-width: 0; }
          </rect>
         </property>
        </widget>
-       <widget class="QTableView" name="tableView_2">
+       <widget class="QTableView" name="tableViewlunch">
         <property name="geometry">
          <rect>
           <x>200</x>
@@ -638,7 +638,7 @@ hr { height: 1px; border-width: 0; }
          </rect>
         </property>
        </widget>
-       <widget class="QTableView" name="tableView">
+       <widget class="QTableView" name="tableViewbreakfast">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -648,7 +648,7 @@ hr { height: 1px; border-width: 0; }
          </rect>
         </property>
        </widget>
-       <widget class="QTableView" name="tableView_5">
+       <widget class="QTableView" name="tableViewdinner">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -658,7 +658,7 @@ hr { height: 1px; border-width: 0; }
          </rect>
         </property>
        </widget>
-       <widget class="QTableView" name="tableView_6">
+       <widget class="QTableView" name="tableViewsnack">
         <property name="geometry">
          <rect>
           <x>200</x>

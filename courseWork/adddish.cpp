@@ -1,7 +1,6 @@
 #include "adddish.h"
 #include "ui_adddish.h"
 #include "ui_mainwindow.h"
-#include <fstream>
 
 AddDish::AddDish(QWidget *parent, Ui::MainWindow *MWui, int row, QString date, QString time) :
     QDialog(parent),
@@ -47,7 +46,7 @@ void AddDish::on_tableView_clicked(const QModelIndex &index)
 {
     tmp_row = index.row() + 1;
 
-    QString tmp_query = "SELECT Recipes.name FROM Recipes WHERE Recipes.id = " + QString::number(tmp_row) + ";";
+    QString tmp_query = "SELECT name FROM 'Recipes' WHERE id = " + QString::number(tmp_row) + ";";
 
     if(db.open()){
          qDebug("Open");
@@ -56,10 +55,10 @@ void AddDish::on_tableView_clicked(const QModelIndex &index)
     }
     query = new QSqlQuery(db);
     query->prepare(tmp_query);
-    //query->prepare("SELECT * FROM Recipes WHERE Recipes.id = :id");
-    //query->bindValue(":id", tmp_row);
+    query->exec();
 
-    tmp_name = QString(query->value(0).toString());
+    if(query->first()){
+    tmp_name = query->value(0).toString();}
 
 }
 
@@ -71,7 +70,7 @@ void AddDish::on_pushButton_clicked()
 
     if(tmp_count>0 && tmp_row!=-1){
 
-    QString tmp_query = "INSERT INTO tmp_" + time + " (recipe_id, name, count) VALUES (:id, :name, :count);";
+    QString tmp_query = "INSERT INTO tmp_" + time + " (recipe_id, name, count) VALUES (:recipe_id, :name, :count);";
     if(db.open()){
          qDebug("Open");
     }else{
@@ -84,10 +83,18 @@ void AddDish::on_pushButton_clicked()
     query->bindValue(2, tmp_count);
     query->exec();
 
-    std::ofstream fin;
-    fin.open("tmp.txt");
-    fin << tmp_row << " " << tmp_name.toStdString() << " " << tmp_count;
-    fin.close();
+    tmp_query = "INSERT INTO " + time + " (recipe_id, quantity, time) VALUES (:recipe_id, :quantity, :time);";
+    if(db.open()){
+         qDebug("Open");
+    }else{
+         qDebug("No open");
+    }
+    query = new QSqlQuery(db);
+    query->prepare(tmp_query);
+    query->bindValue(0, tmp_row);
+    query->bindValue(1, tmp_count);
+    query->bindValue(2, date);
+    query->exec();
 
     AddDish::~AddDish();
     }
