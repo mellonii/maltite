@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <fstream>
+#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -59,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     for(int i = 2; i<=5; ++i){
         ui->prod_table->setColumnHidden(i, true);
     }
+    ui->prod_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     modelFavFood = new QSqlTableModel(this, db);
     modelFavFood ->setTable("FavFood");
@@ -523,5 +525,32 @@ void MainWindow::time_up(){
     ui->tableViewsnack->setColumnHidden(0, true);
     ui->tableViewsnack->setColumnHidden(1, true);
     ui->tableViewsnack->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+}
+
+
+void MainWindow::on_pushButton_14_clicked()
+{
+    QString products;
+    std::string product;
+    std::ifstream fin("products.txt");
+        if (fin.is_open())
+        {
+            std::stringstream buffer;
+            buffer << fin.rdbuf();
+            product = buffer.str();
+        }
+        fin.close();
+
+    std::ofstream out;
+    out.open("tmp.txt");
+    if (out.is_open())
+    {
+        out << product;
+    }
+    out.close();
+
+    products = QString::fromStdString(product);
+    queryDBin = new QSqlQuery(db);
+    queryDBin -> exec(products);
 }
 

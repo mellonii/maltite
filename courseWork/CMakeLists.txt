@@ -44,6 +44,7 @@ set(PROJECT_SOURCES
         adddish.h
         adddish.cpp
         adddish.ui
+        products.txt
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -107,6 +107,8 @@ private slots:
 
     void time_up();
 
+    void on_pushButton_14_clicked();
+
 private:
     Ui::MainWindow *ui;
     QDate todays_date;
@@ -153,6 +155,7 @@ private:
 
     QSqlQuery *query;
     QSqlQuery *queryadd;
+    QSqlQuery *queryDBin;
 
     int row;
     int row1;
