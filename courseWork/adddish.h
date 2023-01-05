@@ -20,7 +20,7 @@ class AddDish : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddDish(QWidget *parent = nullptr, Ui::MainWindow *MWui = nullptr, int row = 0, QString date = "", QString time = "");
+    explicit AddDish(QWidget *parent = nullptr, int row = 0, QString date = "", QString time = "");
     ~AddDish();
 
     int tmp_row;

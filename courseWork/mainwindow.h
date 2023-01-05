@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableView>
+#include <QTableWidget>
 #include <QSqlDatabase>
 #include <QDebug>
 #include <QSqlQuery>
@@ -53,7 +55,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QSqlDatabase db;
+
 
 private slots:
 
@@ -111,6 +113,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QSqlDatabase db;
     QDate todays_date;
 
     QSqlQuery *queryProd;
@@ -161,5 +164,6 @@ private:
     int row1;
     int row2;
     int row3;
+
 };
 #endif // MAINWINDOW_H

@@ -44,18 +44,18 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>201</width>
-     <height>211</height>
+     <width>381</width>
+     <height>91</height>
     </rect>
    </property>
   </widget>
   <widget class="QTableView" name="tableView_2">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>10</y>
-     <width>161</width>
-     <height>211</height>
+     <x>10</x>
+     <y>110</y>
+     <width>381</width>
+     <height>141</height>
     </rect>
    </property>
   </widget>

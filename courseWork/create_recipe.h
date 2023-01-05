@@ -14,7 +14,7 @@ namespace Ui {
 class create_recipe;
 }
 
-struct Product;
+struct Products;
 struct Dish;
 
 class create_recipe : public QDialog

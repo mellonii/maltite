@@ -2,12 +2,11 @@
 #include "ui_adddish.h"
 #include "ui_mainwindow.h"
 
-AddDish::AddDish(QWidget *parent, Ui::MainWindow *MWui, int row, QString date, QString time) :
+AddDish::AddDish(QWidget *parent, int row, QString date, QString time) :
     QDialog(parent),
     ui(new Ui::AddDish)
 {
     ui->setupUi(this);
-    this->MWui = MWui;
 
     this->row = row;
     this->date = date;
@@ -30,7 +29,7 @@ AddDish::AddDish(QWidget *parent, Ui::MainWindow *MWui, int row, QString date, Q
     model->select();
     ui->tableView->setModel(model);
     ui->tableView->setColumnHidden(0, true);
-    for(int i=2;i<=6;i++){
+    for(int i=2;i<=7;i++){
         ui->tableView->setColumnHidden(i, true);
     }
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -67,10 +66,18 @@ void AddDish::on_pushButton_clicked()
 {
     QString tmp_count_str = ui->textEdit->toPlainText();
     tmp_count = tmp_count_str.toInt();
+    QString tmp_id = "SELECT seq FROM sqlite_sequence WHERE name = '" + time + "';";
+
+    int id = 0;
+    query = new QSqlQuery(db);
+    query->prepare(tmp_id);
+    if(query->next()){
+    id = query->value(0).toInt();}
+    id++;
 
     if(tmp_count>0 && tmp_row!=-1){
 
-    QString tmp_query = "INSERT INTO tmp_" + time + " (recipe_id, name, count) VALUES (:recipe_id, :name, :count);";
+    QString tmp_query = "INSERT INTO tmp_" + time + " (dish_id, recipe_id, name, count) VALUES (:dish_id, :recipe_id, :name, :count);";
     if(db.open()){
          qDebug("Open");
     }else{
@@ -78,9 +85,10 @@ void AddDish::on_pushButton_clicked()
     }
     query = new QSqlQuery(db);
     query->prepare(tmp_query);
-    query->bindValue(0, tmp_row);
-    query->bindValue(1, tmp_name);
-    query->bindValue(2, tmp_count);
+    query->bindValue(0, id);
+    query->bindValue(1, tmp_row);
+    query->bindValue(2, tmp_name);
+    query->bindValue(3, tmp_count);
     query->exec();
 
     tmp_query = "INSERT INTO " + time + " (recipe_id, quantity, time) VALUES (:recipe_id, :quantity, :time);";
