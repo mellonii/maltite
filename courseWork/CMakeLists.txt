@@ -45,6 +45,7 @@ set(PROJECT_SOURCES
         adddish.cpp
         adddish.ui
         products.txt
+        recipes.txt
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

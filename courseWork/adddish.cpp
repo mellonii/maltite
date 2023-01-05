@@ -1,6 +1,5 @@
 #include "adddish.h"
 #include "ui_adddish.h"
-#include "ui_mainwindow.h"
 
 AddDish::AddDish(QWidget *parent, int row, QString date, QString time) :
     QDialog(parent),

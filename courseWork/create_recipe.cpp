@@ -1,6 +1,5 @@
 #include "create_recipe.h"
 #include "ui_create_recipe.h"
-#include <fstream>
 
 create_recipe::create_recipe(QWidget *parent, int num) :
     QDialog(parent),
@@ -137,7 +136,7 @@ void create_recipe::on_pushButton_2_clicked()
     QSqlQuery query_all("SELECT ProdInRec.Prod_id,  Products.calories , Products.protein , Products.fat , Products.carbohydrate, ProdInRec.count, Products.name FROM ProdInRec, Products "
                     "WHERE ProdInRec.Prod_id = Products.id");
         while (query_all.next()) {
-            Products tmp_Prod = Products(query_all.value(0).toInt(), query_all.value(1).toInt()/100, query_all.value(2).toDouble()/100.0,query_all.value(3).toDouble()/100.0,query_all.value(4).toDouble()/100.0, query_all.value(6).toString());
+            Products tmp_Prod = Products(query_all.value(0).toInt(), query_all.value(1).toInt(), query_all.value(2).toDouble()/100.0,query_all.value(3).toDouble()/100.0,query_all.value(4).toDouble()/100.0, query_all.value(6).toString());
             ingredient_list.insert(std::make_pair(query_all.value(5).toDouble(), tmp_Prod));
 
         }
@@ -157,6 +156,7 @@ void create_recipe::on_pushButton_2_clicked()
         ingredients = ingredients + QString::number(cou) + ". " + std::get<1>(pair).name + " - " + QString::number(std::get<0>(pair)) + "г\n";
     }
 
+    if(cou>0 && ingredients.size()>0 && recipe.size()>0 && name.size()>0){
     if(db.open()){
         qDebug("Open");
     }else{
@@ -168,12 +168,12 @@ void create_recipe::on_pushButton_2_clicked()
     query->bindValue(0, name);
     query->bindValue(1, recipe);
     query->bindValue(2, ingredients);
-    query->bindValue(3, calories);
+    query->bindValue(3, calories/100);
     query->bindValue(4, protein);
     query->bindValue(5, fat);
     query->bindValue(6, carbohydrate);
     query->exec();
 
     create_recipe::~create_recipe();
-
+}
 }

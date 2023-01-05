@@ -36,6 +36,15 @@ MainWindow::MainWindow(QWidget *parent)
     queryUser = new QSqlQuery(db);
     queryUser -> exec("CREATE TABLE IF NOT EXISTS User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
 
+    query_recipes = new QSqlQuery(db);
+    query_recipes -> exec("SELECT id FROM Products;");
+    if(query_recipes->next()){
+    }else{
+        std::string file_name = "products.txt";
+        addbd(file_name);
+        file_name = "recipes.txt";
+        addbd(file_name);
+    }
 
     model_recipes = new QSqlTableModel(this, db);
     model_recipes ->setTable("Recipes");
@@ -140,6 +149,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     todays_date = QDate::currentDate();
     MainWindow::on_calendarWidget_activated(todays_date);
+
 
 }
 
@@ -535,16 +545,12 @@ void MainWindow::time_up(){
 }
 
 
-void MainWindow::on_pushButton_14_clicked()
+void MainWindow::addbd(std::string file_name)
 {
-    /*
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("./exampleProdDB.db");
-    */
     QString products;
 
     std::string product;
-    std::ifstream fin("products.txt");
+    std::ifstream fin(file_name);
         if (fin.is_open())
         {
             std::stringstream buffer;
@@ -558,4 +564,5 @@ void MainWindow::on_pushButton_14_clicked()
     queryDBin = new QSqlQuery(db);
     queryDBin -> exec(products);
 }
+
 

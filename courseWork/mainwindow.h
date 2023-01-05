@@ -109,7 +109,7 @@ private slots:
 
     void time_up();
 
-    void on_pushButton_14_clicked();
+    void addbd(std::string file_name);
 
 private:
     Ui::MainWindow *ui;
@@ -159,6 +159,7 @@ private:
     QSqlQuery *query;
     QSqlQuery *queryadd;
     QSqlQuery *queryDBin;
+    QSqlQuery *queryDBin1;
 
     int row;
     int row1;
