@@ -269,7 +269,7 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
     tmp_active = index;
 }
 
-void MainWindow::on_pushButton_9_clicked() //update
+void MainWindow::on_pushButton_9_clicked()
 {
     QString name = ui->textEdit->toPlainText();
     tmp_name = name.toStdString();
@@ -277,7 +277,7 @@ void MainWindow::on_pushButton_9_clicked() //update
     tmp_age = ui->textEdit_4->toPlainText().toInt();
     tmp_weight = ui->textEdit_2->toPlainText().toInt();
     tmp_height = ui->textEdit_3->toPlainText().toInt();
-    user.info(tmp_age, tmp_height, tmp_weight, tmp_gender, tmp_active, tmp_goal); // tmp_gender ++
+    user.info(tmp_age, tmp_height, tmp_weight, tmp_gender, tmp_active, tmp_goal);
 
     ui->textBrowser_13->clear();
     QString tmp_browser = "Твоя норма калорий в день :  " + QString::number(user.daily_calorie_intake);
@@ -311,14 +311,6 @@ void MainWindow::on_pushButton_9_clicked() //update
     queryUserIn->bindValue(9, user.fat);
     queryUserIn->bindValue(10, user.carbs);
     queryUserIn->exec();
-
-    /*
-    std::ofstream fin;
-    fin.open("tmp.txt");
-    fin <<  ;
-    fin.close();
-    */
-
 
 }
 
@@ -379,7 +371,6 @@ void MainWindow::table_update(QString dateString, QString time){
 }
 
     time_up();
-    // recipe_id INTEGER, quantity INTEGER, time DATETIME
 }
 
 void MainWindow::on_calendarWidget_activated(const QDate &date)
@@ -392,15 +383,6 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     table_update(dateString, "lunch");
     table_update(dateString, "dinner");
     table_update(dateString, "snack");
-    /*
-        std::ofstream out;
-        out.open("tmp.txt");
-        if (out.is_open())
-        {
-            out<< dateString.toStdString();
-        }
-        out.close();
-        */
 }
 
 void MainWindow::on_tableViewbreakfast_clicked(const QModelIndex &index)

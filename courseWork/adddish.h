@@ -12,7 +12,6 @@
 
 namespace Ui {
 class AddDish;
-class MainWindow;
 }
 
 class AddDish : public QDialog
@@ -35,7 +34,6 @@ private slots:
 
 private:
     Ui::AddDish *ui;
-    Ui::MainWindow *MWui;
 
     QSqlDatabase db;
     QSqlTableModel *model;

@@ -166,5 +166,10 @@ private:
     int row2;
     int row3;
 
+    int Calories;
+    double Carbohydrate;
+    double Protein;
+    double Fat;
+
 };
 #endif // MAINWINDOW_H

@@ -14,8 +14,28 @@ namespace Ui {
 class create_recipe;
 }
 
-struct Products;
-struct Dish;
+struct Products {
+    int id;
+    QString name;
+    int Calories;
+    double Carbohydrate;
+    double Protein;
+    double Fat;
+    Products();
+    Products(int id, int Calories, double Protein, double Fat, double Carbohydrate, QString name);
+};
+struct Dish {
+    QString name;
+    QString recipe;
+    int Calories;
+    double Carbohydrate;
+    double Protein;
+    double Fat;
+    std::map<double, Products> ingredient_list; //map для сохранения ингредиентов и количества
+    Dish();
+    Dish(QString name, QString recipe, std::map<double, Products> ingredient_list);
+    void addProduct(double count, Products product);
+};
 
 class create_recipe : public QDialog
 {
@@ -42,7 +62,6 @@ private:
     QSqlQuery *query_all;
     QSqlQuery *query;
     int num;
-    bool a;
 };
 
 #endif // CREATE_RECIPE_H

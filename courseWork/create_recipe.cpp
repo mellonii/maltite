@@ -7,7 +7,6 @@ create_recipe::create_recipe(QWidget *parent, int num) :
 {
     ui->setupUi(this);
     this->num = num;
-    bool a = 0;
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("testDB.db");
@@ -49,14 +48,8 @@ create_recipe::~create_recipe()
 #include <algorithm>
 #include <vector>
 
-struct Products {
-    int id;
-    QString name;
-    int Calories;
-    double Carbohydrate;
-    double Protein;
-    double Fat;
-    Products() {
+
+    Products::Products() {
         this->id = 0;
         this->Calories = 0;
         this->Carbohydrate = 0.0;
@@ -64,7 +57,7 @@ struct Products {
         this->Fat = 0.0;
         this->name = "";
     }
-    Products(int id, int Calories, double Protein, double Fat, double Carbohydrate, QString name) {
+    Products::Products(int id, int Calories, double Protein, double Fat, double Carbohydrate, QString name) {
         this->id = id;
         this->Calories = Calories;
         this->Carbohydrate = Carbohydrate;
@@ -72,17 +65,8 @@ struct Products {
         this->Fat = Fat;
         this->name = name;
     }
-};
-//Рецепты с продуктами и количеством продуктов
-struct Dish {
-    QString name;
-    QString recipe;
-    int Calories;
-    double Carbohydrate;
-    double Protein;
-    double Fat;
-    std::map<double, Products> ingredient_list; //map для сохранения ингредиентов и количества
-    Dish() {
+
+    Dish::Dish() {
         name = "0";
         recipe = "0";
         Calories = 0;
@@ -90,7 +74,7 @@ struct Dish {
         Protein = 0.0;
         Fat = 0.0;
     }
-    Dish(QString name, QString recipe, std::map<double, Products> ingredient_list) {
+    Dish::Dish(QString name, QString recipe, std::map<double, Products> ingredient_list) {
         this->name = name;
         this->recipe = recipe;
         Calories = 0;
@@ -101,14 +85,13 @@ struct Dish {
             addProduct(std::get<0>(pair), std::get<1>(pair));
         }
     }
-    void addProduct(double count, Products product) {
+    void Dish::addProduct(double count, Products product) {
         ingredient_list.insert(std::make_pair(count, product));
         Calories = Calories + product.Calories * count;
         Carbohydrate = Carbohydrate + product.Carbohydrate * count;
         Protein = Protein + product.Protein * count;
         Fat = Fat + product.Fat * count;
     }
-};
 
 
 void create_recipe::on_pushButton_clicked()
