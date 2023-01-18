@@ -7,11 +7,8 @@
 #include <QSqlQuery>
 #include <QSqlTableModel>
 #include <QSqlError>
-#include <QDialog>
 
-#include <map>
-#include <algorithm>
-#include <vector>
+#include <QDialog>
 
 namespace Ui {
 class create_recipe;
@@ -34,7 +31,7 @@ struct Dish {
     double Carbohydrate;
     double Protein;
     double Fat;
-    std::map<double, Products> ingredient_list;
+    std::map<double, Products> ingredient_list; //map для сохранения ингредиентов и количества
     Dish();
     Dish(QString name, QString recipe, std::map<double, Products> ingredient_list);
     void addProduct(double count, Products product);

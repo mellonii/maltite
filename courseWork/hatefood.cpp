@@ -1,7 +1,7 @@
 #include "hatefood.h"
 #include "ui_hatefood.h"
 
-HateFood::HateFood(QWidget* parent) :
+HateFood::HateFood(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::HateFood)
 {
@@ -9,15 +9,14 @@ HateFood::HateFood(QWidget* parent) :
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("testDB.db");
-    if (db.open()) {
+    if(db.open()){
         qDebug("Open");
-    }
-    else {
+    }else{
         qDebug("No open");
     }
 
     model = new QSqlTableModel(this, db);
-    model->setTable("HateFood");
+    model ->setTable("HateFood");
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Номер"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("Название"));
     model->select();
@@ -33,7 +32,7 @@ HateFood::HateFood(QWidget* parent) :
     ui->tableView_2->setModel(modelProd);
     ui->tableView_2->setColumnHidden(0, true);
     ui->tableView_2->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    for (int i = 2; i <= 5; ++i) {
+    for(int i = 2; i<=5; ++i){
         ui->tableView_2->setColumnHidden(i, true);
     }
 }
@@ -53,7 +52,7 @@ void HateFood::on_pushButton_2_clicked()
     model->removeRow(row);
 }
 
-void HateFood::on_tableView_clicked(const QModelIndex& index)
+void HateFood::on_tableView_clicked(const QModelIndex &index)
 {
     row = index.row();
 }
