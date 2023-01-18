@@ -412,8 +412,30 @@ void MainWindow::on_tableViewsnack_clicked(const QModelIndex &index)
 void MainWindow::on_pushButton_clicked()
 {
     if(row!=-1){
-    modelbreakfast->removeRow(row);}
+    modelbreakfast->removeRow(row);
+
+    QString tmp_delete = "SELECT dish_id FROM tmp_breakfast WHERE id = " + QString::number(row + 1) + ";";
+    query ->clear();
+    query = new QSqlQuery(db);
+    query->exec(tmp_delete);
+    int dish_id = query->value(0).toInt();
+
+    std::ofstream out;
+        out.open("tmp.txt");
+        if (out.is_open())
+        {
+           out << query->value(0).toInt();
+        }
+    out.close();
+
+    tmp_delete = "DELETE FROM breakfast WHERE id = " + QString::number(dish_id) + ";";
+    query ->clear();
+    query = new QSqlQuery(db);
+    query->exec(tmp_delete);
+
+    }
     row = -1;
+
 }
 
 
