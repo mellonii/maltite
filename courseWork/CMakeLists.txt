@@ -18,7 +18,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -46,8 +46,8 @@ set(PROJECT_SOURCES
         adddish.h
         adddish.cpp
         adddish.ui
-        products.txt
-        recipes.txt
+        #products.txt
+        #recipes.txt
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -68,7 +68,7 @@ else()
 endif()
 
 target_link_libraries(courseWork PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(courseWork PRIVATE Qt6::Sql)
+target_link_libraries(courseWork PRIVATE Qt${QT_VERSION_MAJOR}::Sql)
 
 set_target_properties(courseWork PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
@@ -86,7 +86,8 @@ endif()
 
 ####################################################################################
 install(TARGETS courseWork DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-#install(TARGETS lamoda RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/dlls)
+install(FILES products.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+install(FILES recipes.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 ####################################################################################
 
 
@@ -94,5 +95,6 @@ install(TARGETS courseWork DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ####################################################################################
 install(TARGETS courseWork DESTINATION .)
-#install(TARGETS lamoda RUNTIME DESTINATION ./dlls)
+install(FILES products.txt DESTINATION .)
+install(FILES recipes.txt DESTINATION .)
 ####################################################################################
