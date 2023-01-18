@@ -19,6 +19,9 @@
 #include "hatefood.h"
 #include "adddish.h"
 
+#include <fstream>
+#include <sstream>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -29,11 +32,10 @@ private:
     int age;
     int height;
     int weight;
-    bool gender; //0 - мужской пол, 1 - женский пол
-    int goal; //1 - сбросить, 2 - сохранить, 3 - набрать
+    bool gender;
+    int goal;
     double AMR;
     int active;
-    //1 - Сидячий образ жизни, 2 - Умеренная активность, 3 - Средняя(занятия 3 - 5 раз в неделю), 5 - Активные люди(интенсивные нагрузки), 6 - Спортсмены(6 - 7 раз в неделю)
 
 public:
     int daily_calorie_intake;
@@ -142,9 +144,9 @@ private:
     int tmp_age;
     int tmp_height;
     int tmp_weight;
-    bool tmp_gender; //0 - мужской пол, 1 - женский
-    int tmp_goal; //1 - сбросить, 2 - сохранить, 3 - набрать
-    int tmp_active; //1 - Сидячий образ жизни, 2 - Умеренная активность, 3 - Средняя(занятия 3 - 5 раз в неделю), 4 - Активные люди(интенсивные нагрузки), 5 - Спортсмены(6 - 7 раз в неделю)
+    bool tmp_gender;
+    int tmp_goal;
+    int tmp_active;
 
     QSqlQuery *breakfastTableQuery;
     QSqlQuery *lunchTableQuery;

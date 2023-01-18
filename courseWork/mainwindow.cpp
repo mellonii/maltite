@@ -1,9 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <fstream>
-#include <sstream>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -13,33 +11,34 @@ MainWindow::MainWindow(QWidget *parent)
     tmp_age = 21;
     tmp_height = 160;
     tmp_weight = 65;
-    tmp_gender = 1; //0 - мужской пол, 1 - женский пол
-    tmp_goal = 2; //1 - сбросить, 2 - сохранить, 3 - набрать
+    tmp_gender = 1;
+    tmp_goal = 2;
     tmp_active = 2;
-    //1 - Сидячий образ жизни, 2 - Умеренная активность, 3 - Средняя(занятия 3 - 5 раз в неделю), 4 - Активные люди(интенсивные нагрузки), 5 - Спортсмены(6 - 7 раз в неделю)
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./testDB.db");
-    if(db.open()){
+    if (db.open()) {
         qDebug("Open");
-    }else{
+    }
+    else {
         qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
     query_recipes = new QSqlQuery(db);
-    query_recipes -> exec("CREATE TABLE IF NOT EXISTS Recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, recipe TEXT, ingredients TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
+    query_recipes->exec("CREATE TABLE IF NOT EXISTS Recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, recipe TEXT, ingredients TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
     queryProd = new QSqlQuery(db);
-    queryProd -> exec("CREATE TABLE IF NOT EXISTS Products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
+    queryProd->exec("CREATE TABLE IF NOT EXISTS Products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
     queryFavFood = new QSqlQuery(db);
-    queryFavFood -> exec("CREATE TABLE IF NOT EXISTS FavFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
+    queryFavFood->exec("CREATE TABLE IF NOT EXISTS FavFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
     queryHateFood = new QSqlQuery(db);
-    queryHateFood -> exec("CREATE TABLE IF NOT EXISTS HateFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
+    queryHateFood->exec("CREATE TABLE IF NOT EXISTS HateFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
     queryUser = new QSqlQuery(db);
-    queryUser -> exec("CREATE TABLE IF NOT EXISTS User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
+    queryUser->exec("CREATE TABLE IF NOT EXISTS User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
 
     query_recipes = new QSqlQuery(db);
-    query_recipes -> exec("SELECT id FROM Products;");
-    if(query_recipes->next()){
-    }else{
+    query_recipes->exec("SELECT id FROM Products;");
+    if (query_recipes->next()) {
+    }
+    else {
         std::string file_name = "products.txt";
         addbd(file_name);
         file_name = "recipes.txt";
@@ -47,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     model_recipes = new QSqlTableModel(this, db);
-    model_recipes ->setTable("Recipes");
+    model_recipes->setTable("Recipes");
     model_recipes->setHeaderData(1, Qt::Horizontal, QObject::tr("Название"));
     model_recipes->setHeaderData(2, Qt::Horizontal, QObject::tr("Рецепт"));
     model_recipes->setHeaderData(4, Qt::Horizontal, QObject::tr("Калории"));
@@ -69,12 +68,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->prod_table->setModel(modelProd);
     ui->prod_table->setColumnHidden(0, true);
     ui->prod_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    for(int i = 2; i<=5; ++i){
+    for (int i = 2; i <= 5; ++i) {
         ui->prod_table->setColumnHidden(i, true);
     }
 
     modelFavFood = new QSqlTableModel(this, db);
-    modelFavFood ->setTable("FavFood");
+    modelFavFood->setTable("FavFood");
     modelFavFood->setHeaderData(2, Qt::Horizontal, QObject::tr("Название"));
     modelFavFood->select();
     ui->tableView_3->setModel(modelFavFood);
@@ -83,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView_3->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     modelFavFood = new QSqlTableModel(this, db);
-    modelFavFood ->setTable("HateFood");
+    modelFavFood->setTable("HateFood");
     modelFavFood->setHeaderData(2, Qt::Horizontal, QObject::tr("Название"));
     modelFavFood->select();
     ui->tableView_4->setModel(modelFavFood);
@@ -91,9 +90,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView_4->setColumnHidden(1, true);
     ui->tableView_4->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-    if(db.open()){
+    if (db.open()) {
         qDebug("Open");
-    }else{
+    }
+    else {
         qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
     QSqlQuery queryUser1("SELECT name, age, height, weight, gender, goal, active, daily_calorie_intake, protein, fat, carbs FROM User;");
@@ -130,7 +130,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (db.open()) {
         qDebug("Database opened successfully");
-    } else {
+    }
+    else {
         qDebug("Failed to open database: %s", qPrintable(db.lastError().text()));
     }
     breakfastTableQuery = new QSqlQuery(db);
@@ -164,7 +165,7 @@ User::User(std::string name) {
     this->age = 21;
     this->height = 160;
     this->weight = 65;
-    this->gender = 1; //Девушка
+    this->gender = 1;
     this->goal = 2;
     this->active = 2;
     daily_calorie();
@@ -177,32 +178,31 @@ void User::info(int age, int height, int weight, bool gender, int active, int go
     this->weight = weight;
     this->gender = gender;
     this->goal = goal;
-    //AMR подсчет в зависимости от активности
     if (1) {
         if (active == 0) {
-            AMR = 0.8; //для худеющих
+            AMR = 0.8;
         }
         else if (active == 1) {
-            AMR = 1.2; //Сидячий образ жизни
+            AMR = 1.2;
         }
         else if (active == 2) {
-            AMR = 1.375; //Умеренная активность
+            AMR = 1.375;
         }
         else if (active == 3) {
-            AMR = 1.55; //Средняя(занятия 3 - 5 раз в неделю)
+            AMR = 1.55;
         }
         else if (active == 4) {
-            AMR = 1.725; //Активные люди(интенсивные нагрузки)
+            AMR = 1.725;
         }
         else if (active == 5) {
-            AMR = 1.9; //Спортсмены(6 - 7 раз в неделю)
+            AMR = 1.9;
         }
     }
     daily_calorie();
     cbgu_norma();
 }
 
-void User::daily_calorie() { //Формула Харриса-Беннедикта
+void User::daily_calorie() {
     double BMR = 0.0;
     if (gender == 1) {
         BMR = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
@@ -223,7 +223,6 @@ void User::daily_calorie() { //Формула Харриса-Беннедикт�
 
 void User::cbgu_norma() {
     double TDEE = daily_calorie_intake;
-    // Расчет рекомендуемого соотношения белков, жиров и углеводов в граммах
     if (goal == 2) {
         protein = TDEE * 0.15;
         fat = TDEE * 0.25;
@@ -252,7 +251,7 @@ void MainWindow::on_pushButton_4_clicked()
     w1->show();
 }
 
-void MainWindow::on_prod_table_doubleClicked(const QModelIndex &index)
+void MainWindow::on_prod_table_doubleClicked(const QModelIndex& index)
 {
     w3 = new Product(this, index.row());
     w3->show();
@@ -287,23 +286,24 @@ void MainWindow::on_pushButton_9_clicked()
     QString tmp1_browser = "Необходимое бжу на день : белки - " + QString::number(user.protein) + " г, жиры - " + QString::number(user.fat) + " г, углеводы - " + QString::number(user.carbs) + " г";
     ui->textBrowser_14->insertPlainText(tmp1_browser);
 
-    if(db.open()){
+    if (db.open()) {
         qDebug("Open");
-    }else{
+    }
+    else {
         qDebug("No open");
     }
     queryUserDrop = new QSqlQuery(db);
-    queryUserDrop -> exec("DROP TABLE IF EXISTS User;");
+    queryUserDrop->exec("DROP TABLE IF EXISTS User;");
     queryUser = new QSqlQuery(db);
-    queryUser -> exec("CREATE TABLE User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
+    queryUser->exec("CREATE TABLE User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
     queryUserIn = new QSqlQuery(db);
     queryUserIn->prepare("INSERT INTO User(name, age, height, weight, gender, goal, active, daily_calorie_intake, protein, fat, carbs) "
-                  "VALUES (:name, :age, :height, :weight, :gender, :goal, :active, :daily_calorie_intake, :protein, :fat, :carbs)");
+        "VALUES (:name, :age, :height, :weight, :gender, :goal, :active, :daily_calorie_intake, :protein, :fat, :carbs)");
     queryUserIn->bindValue(0, name);
     queryUserIn->bindValue(1, tmp_age);
     queryUserIn->bindValue(2, tmp_height);
     queryUserIn->bindValue(3, tmp_weight);
-    queryUserIn->bindValue(4, tmp_gender+1);
+    queryUserIn->bindValue(4, tmp_gender + 1);
     queryUserIn->bindValue(5, tmp_goal);
     queryUserIn->bindValue(6, tmp_active);
     queryUserIn->bindValue(7, user.daily_calorie_intake);
@@ -329,51 +329,53 @@ void MainWindow::on_comboBox_3_currentIndexChanged(int index)
     tmp_goal = index;
 }
 
-void MainWindow::on_tableRecipes_doubleClicked(const QModelIndex &index)
+void MainWindow::on_tableRecipes_doubleClicked(const QModelIndex& index)
 {
     w2 = new Recipe(this, index.row());
     w2->show();
 
 }
 
-void MainWindow::table_update(QString dateString, QString time){
+void MainWindow::table_update(QString dateString, QString time) {
 
     QString tmp_query = "SELECT " + time + ".id, " + time + ".recipe_id, Recipes.name, " + time + ".quantity FROM Recipes, " + time + " WHERE (Recipes.id = " + time + ".recipe_id AND " + time + ".time = '" + dateString + "');";
     QString tmp_drop = "DROP TABLE IF EXISTS tmp_" + time + ";";
     QString tmp_create = "CREATE TABLE tmp_" + time + " (dish_id INTEGER, id INTEGER PRIMARY KEY AUTOINCREMENT, recipe_id INTEGER, name TEXT, count INTEGER);";
 
-    if(db.open()){
-         qDebug("Open");
-    }else{
-         qDebug("No open");
+    if (db.open()) {
+        qDebug("Open");
+    }
+    else {
+        qDebug("No open");
     }
     query = new QSqlQuery(db);
     query->exec(tmp_drop);
-    query ->clear();
+    query->clear();
     query->exec(tmp_create);
-    query ->clear();
+    query->clear();
     query->prepare(tmp_query);
     query->exec();
-    while(query->next()){
-          tmp_query = "INSERT INTO tmp_" + time + " (dish_id, recipe_id, name, count) VALUES (:dish_id, :recipe_id, :name, :count)";
-          if(db.open()){
-               qDebug("Open");
-          }else{
-               qDebug("No open");
-          }
-          queryadd = new QSqlQuery(db);
-          queryadd->prepare(tmp_query);
-          queryadd->bindValue(0, query->value(0).toInt());
-          queryadd->bindValue(1, query->value(1).toInt());
-          queryadd->bindValue(2, query->value(2).toString());
-          queryadd->bindValue(3, query->value(3).toInt());
-          queryadd->exec();
-}
+    while (query->next()) {
+        tmp_query = "INSERT INTO tmp_" + time + " (dish_id, recipe_id, name, count) VALUES (:dish_id, :recipe_id, :name, :count)";
+        if (db.open()) {
+            qDebug("Open");
+        }
+        else {
+            qDebug("No open");
+        }
+        queryadd = new QSqlQuery(db);
+        queryadd->prepare(tmp_query);
+        queryadd->bindValue(0, query->value(0).toInt());
+        queryadd->bindValue(1, query->value(1).toInt());
+        queryadd->bindValue(2, query->value(2).toString());
+        queryadd->bindValue(3, query->value(3).toInt());
+        queryadd->exec();
+    }
 
     time_up();
 }
 
-void MainWindow::on_calendarWidget_activated(const QDate &date)
+void MainWindow::on_calendarWidget_activated(const QDate& date)
 {
 
     QString dateString = date.toString("yyyy-MM-dd");
@@ -385,25 +387,25 @@ void MainWindow::on_calendarWidget_activated(const QDate &date)
     table_update(dateString, "snack");
 }
 
-void MainWindow::on_tableViewbreakfast_clicked(const QModelIndex &index)
+void MainWindow::on_tableViewbreakfast_clicked(const QModelIndex& index)
 {
     row = index.row();
 }
 
 
-void MainWindow::on_tableViewlunch_clicked(const QModelIndex &index)
+void MainWindow::on_tableViewlunch_clicked(const QModelIndex& index)
 {
     row1 = index.row();
 }
 
 
-void MainWindow::on_tableViewdinner_clicked(const QModelIndex &index)
+void MainWindow::on_tableViewdinner_clicked(const QModelIndex& index)
 {
     row2 = index.row();
 }
 
 
-void MainWindow::on_tableViewsnack_clicked(const QModelIndex &index)
+void MainWindow::on_tableViewsnack_clicked(const QModelIndex& index)
 {
     row3 = index.row();
 }
@@ -411,27 +413,27 @@ void MainWindow::on_tableViewsnack_clicked(const QModelIndex &index)
 
 void MainWindow::on_pushButton_clicked()
 {
-    if(row!=-1){
-    modelbreakfast->removeRow(row);
+    if (row != -1) {
+        modelbreakfast->removeRow(row);
 
-    QString tmp_delete = "SELECT dish_id FROM tmp_breakfast WHERE id = " + QString::number(row + 1) + ";";
-    query ->clear();
-    query = new QSqlQuery(db);
-    query->exec(tmp_delete);
-    int dish_id = query->value(0).toInt();
+        QString tmp_delete = "SELECT dish_id FROM tmp_breakfast WHERE id = " + QString::number(row + 1) + ";";
+        query->clear();
+        query = new QSqlQuery(db);
+        query->exec(tmp_delete);
+        int dish_id = query->value(0).toInt();
 
-    std::ofstream out;
+        std::ofstream out;
         out.open("tmp.txt");
         if (out.is_open())
         {
-           out << query->value(0).toInt();
+            out << query->value(0).toInt();
         }
-    out.close();
+        out.close();
 
-    tmp_delete = "DELETE FROM breakfast WHERE id = " + QString::number(dish_id) + ";";
-    query ->clear();
-    query = new QSqlQuery(db);
-    query->exec(tmp_delete);
+        tmp_delete = "DELETE FROM breakfast WHERE id = " + QString::number(dish_id) + ";";
+        query->clear();
+        query = new QSqlQuery(db);
+        query->exec(tmp_delete);
 
     }
     row = -1;
@@ -441,24 +443,27 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    if(row1!=-1){
-    modellunch->removeRow(row);}
+    if (row1 != -1) {
+        modellunch->removeRow(row);
+    }
     row1 = -1;
 }
 
 
 void MainWindow::on_pushButton_12_clicked()
 {
-    if(row2!=-1){
-    modeldinner->removeRow(row);}
+    if (row2 != -1) {
+        modeldinner->removeRow(row);
+    }
     row2 = -1;
 }
 
 
 void MainWindow::on_pushButton_13_clicked()
 {
-    if(row3!=-1){
-    modelsnack->removeRow(row);}
+    if (row3 != -1) {
+        modelsnack->removeRow(row);
+    }
     row3 = -1;
 }
 
@@ -496,15 +501,16 @@ void MainWindow::on_pushButton_8_clicked()
     wAdd->show();
 }
 
-void MainWindow::time_up(){
-    if(db.open()){
-          qDebug("Open");
-    }else{
-          qDebug("No open for bdls tableView: %s", qPrintable(db.lastError().text()));
+void MainWindow::time_up() {
+    if (db.open()) {
+        qDebug("Open");
+    }
+    else {
+        qDebug("No open for bdls tableView: %s", qPrintable(db.lastError().text()));
     }
 
     modelbreakfast = new QSqlTableModel(this, db);
-    modelbreakfast ->setTable("tmp_breakfast");
+    modelbreakfast->setTable("tmp_breakfast");
     modelbreakfast->setHeaderData(3, Qt::Horizontal, QObject::tr("Блюдо"));
     modelbreakfast->setHeaderData(4, Qt::Horizontal, QObject::tr("Количество (в г)"));
     modelbreakfast->select();
@@ -515,7 +521,7 @@ void MainWindow::time_up(){
     ui->tableViewbreakfast->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     modellunch = new QSqlTableModel(this, db);
-    modellunch ->setTable("tmp_lunch");
+    modellunch->setTable("tmp_lunch");
     modellunch->setHeaderData(3, Qt::Horizontal, QObject::tr("Блюдо"));
     modellunch->setHeaderData(4, Qt::Horizontal, QObject::tr("Количество (в г)"));
     modellunch->select();
@@ -526,7 +532,7 @@ void MainWindow::time_up(){
     ui->tableViewlunch->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     modeldinner = new QSqlTableModel(this, db);
-    modeldinner ->setTable("tmp_dinner");
+    modeldinner->setTable("tmp_dinner");
     modeldinner->setHeaderData(3, Qt::Horizontal, QObject::tr("Блюдо"));
     modeldinner->setHeaderData(4, Qt::Horizontal, QObject::tr("Количество (в г)"));
     modeldinner->select();
@@ -537,7 +543,7 @@ void MainWindow::time_up(){
     ui->tableViewdinner->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     modelsnack = new QSqlTableModel(this, db);
-    modelsnack ->setTable("tmp_snack");
+    modelsnack->setTable("tmp_snack");
     modelsnack->setHeaderData(3, Qt::Horizontal, QObject::tr("Блюдо"));
     modelsnack->setHeaderData(4, Qt::Horizontal, QObject::tr("Количество (в г)"));
     modelsnack->select();
@@ -555,18 +561,18 @@ void MainWindow::addbd(std::string file_name)
 
     std::string product;
     std::ifstream fin(file_name);
-        if (fin.is_open())
-        {
-            std::stringstream buffer;
-            buffer << fin.rdbuf();
-            product = buffer.str();
-        }
-        fin.close();
+    if (fin.is_open())
+    {
+        std::stringstream buffer;
+        buffer << fin.rdbuf();
+        product = buffer.str();
+    }
+    fin.close();
 
     products = QString::fromStdString(product);
 
     queryDBin = new QSqlQuery(db);
-    queryDBin -> exec(products);
+    queryDBin->exec(products);
 }
 
 

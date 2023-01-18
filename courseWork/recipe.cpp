@@ -1,7 +1,7 @@
 #include "recipe.h"
 #include "ui_recipe.h"
 
-Recipe::Recipe(QWidget *parent, int row) :
+Recipe::Recipe(QWidget* parent, int row) :
     QDialog(parent),
     ui(new Ui::Recipe)
 {
@@ -9,14 +9,15 @@ Recipe::Recipe(QWidget *parent, int row) :
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./testDB.db");
-    if(db.open()){
+    if (db.open()) {
         qDebug("Open");
-    }else{
+    }
+    else {
         qDebug("No open");
     }
 
     model_recipes = new QSqlTableModel(this, db);
-    model_recipes ->setTable("Recipes");
+    model_recipes->setTable("Recipes");
     model_recipes->setHeaderData(1, Qt::Horizontal, QObject::tr("Название"));
     model_recipes->setHeaderData(4, Qt::Horizontal, QObject::tr("Калории"));
     model_recipes->setHeaderData(5, Qt::Horizontal, QObject::tr("Белки"));
@@ -28,16 +29,17 @@ Recipe::Recipe(QWidget *parent, int row) :
     ui->tableView->setColumnHidden(2, true);
     ui->tableView->setColumnHidden(3, true);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    for(int i=0; i<model_recipes->rowCount(); ++i){
+    for (int i = 0; i < model_recipes->rowCount(); ++i) {
         ui->tableView->setRowHidden(i, true);
     }
     ui->tableView->setRowHidden(row, false);
 
     ui->textBrowser_2->clear();
-    QString tmp = "SELECT recipe, ingredients FROM Recipes WHERE id = " + QString::number(row+1) + " ;";
-    if(db.open()){
+    QString tmp = "SELECT recipe, ingredients FROM Recipes WHERE id = " + QString::number(row + 1) + " ;";
+    if (db.open()) {
         qDebug("Open");
-    }else{
+    }
+    else {
         qDebug("No open");
     }
     QSqlQuery query(tmp);
@@ -45,7 +47,8 @@ Recipe::Recipe(QWidget *parent, int row) :
     QString tmp_str1;
     while (query.next()) {
         tmp_str = "Рецепт: \n" + QString(query.value(0).toString());
-        tmp_str1 = "Ингредиенты: \n" + QString(query.value(1).toString());}
+        tmp_str1 = "Ингредиенты: \n" + QString(query.value(1).toString());
+    }
     ui->textBrowser_2->insertPlainText(tmp_str);
     ui->textBrowser->insertPlainText(tmp_str1);
 
