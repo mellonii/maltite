@@ -56,15 +56,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
     )
 else()
-    if(ANDROID)
-        add_library(courseWork SHARED
-            ${PROJECT_SOURCES}
-        )
-    else()
-        add_executable(courseWork
-            ${PROJECT_SOURCES}
-        )
-    endif()
+    add_executable(courseWork
+        ${PROJECT_SOURCES}
 endif()
 
 target_link_libraries(courseWork PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
