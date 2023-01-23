@@ -57,7 +57,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     )
 else()
     add_executable(courseWork
-        ${PROJECT_SOURCES}
+        ${PROJECT_SOURCES})
 endif()
 
 target_link_libraries(courseWork PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
