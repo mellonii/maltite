@@ -24,15 +24,16 @@ MainWindow::MainWindow(QWidget* parent)
         qDebug("No open: %s", qPrintable(db.lastError().text()));
     }
     query_recipes = new QSqlQuery(db);
-    query_recipes->exec("CREATE TABLE IF NOT EXISTS Recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, recipe TEXT, ingredients TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
+    query_recipes->exec("CREATE TABLE IF NOT EXISTS Recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, recipe TEXT, ingredients TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL, UNIQUE(name));");
     queryProd = new QSqlQuery(db);
-    queryProd->exec("CREATE TABLE IF NOT EXISTS Products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL);");
+    queryProd->exec("CREATE TABLE IF NOT EXISTS Products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, calories INT, protein REAL, fat REAL, carbohydrate REAL, UNIQUE(name));");
     queryFavFood = new QSqlQuery(db);
     queryFavFood->exec("CREATE TABLE IF NOT EXISTS FavFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
     queryHateFood = new QSqlQuery(db);
     queryHateFood->exec("CREATE TABLE IF NOT EXISTS HateFood(id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, name TEXT);");
     queryUser = new QSqlQuery(db);
     queryUser->exec("CREATE TABLE IF NOT EXISTS User(name TEXT, age INTEGER, height REAL, weight INTEGER, gender INTEGER, goal INTEGER, active INTEGER, daily_calorie_intake INTEGER, protein REAL, fat REAL, carbs REAL);");
+
 
     query_recipes = new QSqlQuery(db);
     query_recipes->exec("SELECT id FROM Products;");
@@ -125,8 +126,14 @@ MainWindow::MainWindow(QWidget* parent)
     }
 
     w = new Create_prod(this);
+    w->setModal(true);
+    w->setWindowTitle("Создание продукта");
     wFF = new FavFood(this);
+    wFF->setModal(true);
+    wFF->setWindowTitle("Редактирование любимых продуктов");
     wHF = new HateFood(this);
+    wHF->setModal(true);
+    wHF->setWindowTitle("Редактирование нелюбимых продуктов");
 
     if (db.open()) {
         qDebug("Database opened successfully");
@@ -248,12 +255,16 @@ void MainWindow::on_pushButton_3_clicked()
 void MainWindow::on_pushButton_4_clicked()
 {
     w1 = new create_recipe(this, modelProd->rowCount());
+    w1->setModal(true);
+    w1->setWindowTitle("Создание рецепта");
     w1->show();
 }
 
 void MainWindow::on_prod_table_doubleClicked(const QModelIndex& index)
 {
     w3 = new Product(this, index.row());
+    w3->setModal(true);
+    w3->setWindowTitle("Информация о продукте");
     w3->show();
 }
 
@@ -332,6 +343,8 @@ void MainWindow::on_comboBox_3_currentIndexChanged(int index)
 void MainWindow::on_tableRecipes_doubleClicked(const QModelIndex& index)
 {
     w2 = new Recipe(this, index.row());
+    w2->setModal(true);
+    w2->setWindowTitle("Информация о рецепте");
     w2->show();
 
 }
@@ -472,6 +485,8 @@ void MainWindow::on_pushButton_5_clicked()
     QString dateString = todays_date.toString("yyyy-MM-dd");
     QString time = "breakfast";
     wAdd = new AddDish(this, modelbreakfast->rowCount(), dateString, time);
+    wAdd->setModal(true);
+    wAdd->setWindowTitle("Редактирование дневника");
     wAdd->show();
 }
 
@@ -480,6 +495,8 @@ void MainWindow::on_pushButton_6_clicked()
     QString dateString = todays_date.toString("yyyy-MM-dd");
     QString time = "lunch";
     wAdd = new AddDish(this, modellunch->rowCount(), dateString, time);
+    wAdd->setModal(true);
+    wAdd->setWindowTitle("Редактирование дневника");
     wAdd->show();
 }
 
@@ -489,6 +506,8 @@ void MainWindow::on_pushButton_7_clicked()
     QString dateString = todays_date.toString("yyyy-MM-dd");
     QString time = "dinner";
     wAdd = new AddDish(this, modeldinner->rowCount(), dateString, time);
+    wAdd->setModal(true);
+    wAdd->setWindowTitle("Редактирование дневника");
     wAdd->show();
 }
 
@@ -498,6 +517,8 @@ void MainWindow::on_pushButton_8_clicked()
     QString dateString = todays_date.toString("yyyy-MM-dd");
     QString time = "snack";
     wAdd = new AddDish(this, modelsnack->rowCount(), dateString, time);
+    wAdd->setModal(true);
+    wAdd->setWindowTitle("Редактирование дневника");
     wAdd->show();
 }
 
